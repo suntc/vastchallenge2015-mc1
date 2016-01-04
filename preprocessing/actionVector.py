@@ -114,11 +114,24 @@ def actionVector():
     output = open("actionVec.pkl","wb")
     pickle.dump(actionVec, output)
     output.close()
-    
+
+def saveList():
+    input = open("actionVec.pkl","rb")
+    actionVec = pickle.load(input)
+    input.close()
+    ids = []
+    actionMextrix = []
+    for key in actionVec:
+        ids.append(key)
+        actionMextrix.append(actionVec[key])
+    output = open("idList.pkl","wb")
+    pickle.dump(ids, output)
+    output.close()
+    output = open("actionList.pkl","wb")
+    pickle.dump(actionMextrix, output)
+    output.close()
 if __name__ == "__main__":
     #actions = slices(300)
-    actionVector()
-    #input = open("actionVec.pkl","rb")
-    #actionVec = pickle.load(input)
-    #print actionVec
+    #actionVector()
+    saveList()
     #print getIndex(300,datetime.datetime(2000,1,1,8,6,2))
