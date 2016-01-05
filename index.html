@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Vast Challenge 2015 MC-1</title>
+<style>
+@import url(./Matrix.css);
+.MatrixBG 
+{
+	stroke-width:2;
+	stroke:rgb(70,70,70);
+}
+
+
+
+text.rowtext
+{
+  font-size		:	8pt;
+  color			:   #9D9DB;
+}
+
+
+.ptext
+{
+  font-size		:	15pt;
+  font-family	: 	Microsoft YaHei;
+  color			:   #9D9DB;
+}
+#title
+{
+ position :	absolute;
+ height	  :	1px;
+ width    :	100%;
+ top	  :	0px;
+ min-width:	900px;
+}
+
+#content
+{
+ position	: absolute;
+ height 	: auto;
+ top		: 5px;
+ bottom		: 20px;
+ width		: 100%;
+ border-top	: solid #c3c3c3 2px;
+ min-width	: 900px;
+ min-height	: 900px;
+}
+
+#map
+{
+ position	: absolute;
+ height		: auto;
+ left		: 2px;
+ top		: 100px;
+ bottom		: 40px;
+ width		: 35%;
+}
+
+#matrix
+{
+ position	: absolute;
+ height		: auto;
+ left		: 600px;
+ top		: 0px;
+ bottom		: 40px;
+ width		: 48%;
+}
+
+.png{position: absolute; height:600px; width:600px;}
+	  canvas{position: absolute;}
+
+</style>
+<header>
+</header>
+<body>
+	<div id = 'title'> 
+	</div>
+	<div id = 'content'>
+		<div id = "map">
+		</div>
+		<div id = "matrix">
+			<div id  = 'matrixcavans'></div>
+		</div>
+	</div>
+</body>
+
+<script src = "./D3/d3.js"></script>
+<script src = './data/gridData.js'></script>
+<script type= "text/javascript">
+
+//Global variables.
+var margin  = {top: 50,top2: 10, right: 80, bottom: 35, left:80},
+    width   = 500,//matrix's width
+    height  = 700,
+	barPadding = 3;	
+/*	
+var n = nodes.length;	
+var orders = {
+	name	: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
+	count	: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
+	number	: d3.range(n).sort(function(a, b) { return nodes[b].number - nodes[a].number; })
+};
+*/
+//var timeout = setTimeout(timeoutFunc, 5000);	
+
+var siteNum = gridData.length
+var grids = 32
+var mx = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(grids))
+var my = d3.scale.ordinal().rangeBands([0, height]).domain(d3.range(siteNum))
+
+var sitecolor = ["#e31a1c","#6baed6","#99CC33","#fb9a99","#999999","#fd8d3c","#b15928","#1c9099","#6a3d9a"]
+var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","","","16:00","","","","18:00","","","","20:00","","","","22:00","","","",]
+
+var chosenid = {}
+   
+var svg = d3.select("div#matrixcavans")
+			.append("svg")
+			.attr("width", width + margin.left )
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	// The matrix's background
+	svg.append("rect")
+		.attr("class", "MatrixBG")
+		.attr("width", width)
+		.attr("height", height);
+
+///////functions//////////////////////////////////////////
+/*
+function onInput(inputValue)
+{
+	document.querySelector("#rangeL").value = (100 - inputValue) / 100 ;//show range value.
+	document.querySelector("#rangeR").value = inputValue / 100 ;
+}
+
+var timeoutFunc = function()
+				{
+					order("name");
+					d3.select("#order").property("selectedIndex", 2).node().focus();
+				};
+		
+function click(p)
+{
+	d3.selectAll(".celltext").classed("active", false);
+	d3.select(this).classed("active",true);
+	nameA = nodes[p.y].name;
+	nameB = nodes[p.x].name;
+		
+	//display materials word cloud
+	switch(displayState)
+	{
+		case 1:displayMaterials("mainMaterials",nameA,nameB,false);break;
+		case 2:displayMaterials("spices",nameA,nameB,false);break;
+		case 3:displayMaterials("mix",nameA,nameB,false);break;
+	};
+			
+	//display histogram	
+	datasetA = 	techVector[nameA].concat();
+	datasetB =  techVector[nameB].concat();
+	offset   = width2 / datasetA.length;
+ 	barWidth = (offset - barPadding) / 2;
+		
+	hsvg.selectAll("rect#rectl")
+		.data(datasetA)
+		.transition()
+		.duration(1000)
+		.attr("x", function(d, i) {return i * offset;})
+		.attr("y", function(d) {return height2 - hscale(d);})
+		.attr("height", function(d) {return hscale(d);})
+		.attr("width" , barWidth)
+		.attr("fill"  , "rgb(179,205,227)");
+			
+	hsvg.selectAll("rect#rectr")
+		.data(datasetB)
+		.transition()
+		.duration(1000)
+		.attr("x", function(d, i) {return i * offset + barWidth;})
+		.attr("y", function(d) {return height2 - hscale(d);})
+		.attr("height", function(d) {return hscale(d);})
+		.attr("width" , barWidth)
+		.attr("fill"  , "rgb(251,180,174)");
+		
+	// refresh histogram's tag	
+	tag.select("text.histogramTag1")	
+		.text(translation(nameA));
+	   
+	tag.select("text.histogramTag2")		
+		.text(translation(nameB));			
+}
+	
+function order(value) 
+{
+	x.domain(orders[value]);
+	var t = svg.transition().duration(1500);
+
+	var tempRow = t.selectAll(".row")
+			.delay(function(d, i) { return x(i) * 4; })
+			.attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; });
+		 
+		tempRow.selectAll(".cell")
+			.delay(function(d) { return x(d.x) * 4; })
+			.attr("x", function(d) { return x(d.x); });
+			
+		tempRow.selectAll(".celltext")
+			.delay(function(d) { return x(d.x) * 4; })
+			.attr("x", function(d) { return x(d.x); });
+
+		t.selectAll(".column")
+         .delay(function(d, i) { return x(i) * 4; })
+         .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+}
+
+*/
+
+function click(p,i)
+{
+	p['ids'].forEach(function(id) {chosenid[id] = 0;})
+	console.log(chosenid)
+	var i = 0;
+	for (var key in chosenid)
+	{
+		i++;
+	}
+	console.log(i)
+}
+
+function rowmouseover(p) 
+{
+	//console.log(p['id'])
+	addElement(p['id'].toString())
+}
+
+function rowmouseout(p) 
+{
+	//console.log("mouseout")
+	removeElement(p['id'].toString())
+}	
+	
+/***********************dislpay matrix****************************/ 
+var displayMatrix = function()
+{
+
+	var max = 400
+	var color = d3.scale.linear().domain([1, max]).range(["rgb(255,255,255)","rgb(44,127,184)"]);
+
+	var row = svg.selectAll(".row")
+				.data(gridData)
+				.enter()
+				.append("g")
+				.attr("class", "row")
+				.attr("transform", function(d, i) { return "translate(0," + my(i) + ")"; })
+				.on("mouseover", rowmouseover)
+				.on("mouseout", rowmouseout)
+				.each(Row);
+
+	row.append("line")
+		.attr("stroke","rgb(70,70,70)")
+		.attr("x2", width);
+
+	row.append("text")
+		.attr("class","rowtext")
+		.attr("x", -15)
+		.attr("y", my.rangeBand() / 2)
+		.attr("dy", ".32em")
+		.attr("text-anchor", "end")
+		.text(function(d, i) { return (d['name'] + ' ' + d['id'])})
+		//.style("color","#ffffff");
+		//.style("color",function(d, i) { return sitecolor[d['type']]; });
+	
+
+	var column = svg.selectAll(".column")
+		.data(d3.range(grids))
+		.enter()
+		.append("g")
+		.attr("class", "column")
+		.attr("transform", function(d, i) { return "translate(" + mx(i) + ")rotate(-90)"; });
+
+		column.append("line")
+			.attr("stroke","rgb(70,70,70)")
+			.attr("x1", -height);
+
+		column.append("text")
+			.attr("class","columntext")
+			.attr("x", 6)
+			.attr("y", my.rangeBand() / 2)
+			.attr("dy", ".32em")
+			.attr("text-anchor", "start")
+			.text(function(d, i) { return indexTime[i]; });
+  	
+	/*
+	d3.select("#order").on("change", 
+		function() {
+			clearTimeout(timeout);
+			order(this.value);
+		});	
+	*/	
+	function Row(r) 
+	{
+		var cell = d3.select(this).selectAll(".cell")
+			.data(function(d) { return d["vector"]; })
+			.enter()
+			.append("rect")
+			.attr("class", "cell")
+			.attr("x", function(d,i) { return mx(i); })
+			.attr("width" , mx.rangeBand())
+			.attr("height", my.rangeBand())
+			.style("fill", function(d) { return color(d['count']);})
+			.on("click",click);
+		
+		/*
+		var  text = d3.select(this).selectAll(".celltext")
+			.data(r.filter(function(d) { return d.z; }))
+			.enter()
+			.append("text")
+			.attr("class", "celltext")
+			.attr("cursor","pointer")
+			.attr("x", function(d) { return x(d.x); })
+			.attr("y", x.rangeBand()/2)
+			.text(function(d){return d.z == 1?" ":Math.floor(d.z*100)/100; })
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
+			.on("click",click);
+		*/
+	}
+}
+
+var rangeValueChanged = function(newValue)
+{
+	var p = newValue / 100;
+	var matrix = [],
+        links  = [];	
+		
+	for(var i = 0; i < linksTech.length; i++)
+	{
+		var temp = {};
+		temp["source"] = linksTech[i]["source"];
+		temp["target"] = linksTech[i]["target"];
+		temp["value"]  = linksTech[i]["value"] * p + linksMater[i]["value"] * (1 - p);
+		links.push(temp);
+	}
+	
+	var min   = d3.min(links,function(d){return d["value"]});
+	var color = d3.scale.linear().domain([min, 1]).range(["rgb(127,205,187)","rgb(44,127,184)"]),
+	    z 	  = d3.scale.linear().domain([min, 1]).range([min,1]).clamp(true);
+		
+    // Compute index per node.
+	nodes.forEach(function(node, i) {
+			node.index = i;
+			node.count = 0;
+			matrix[i] = d3.range(n).map(function(j) { return {x: j, y: i, z: 0}; });
+		});
+
+    // Convert links to matrix; count character occurrences.
+    links.forEach(function(link) 
+	{
+		matrix[link.source][link.target].z += link.value;
+		if(link.target != link.source)
+			matrix[link.target][link.source].z += link.value;
+		nodes[link.source].count += link.value;
+		nodes[link.target].count += link.value;
+     });
+	 		
+	var row = svg.selectAll(".row")
+				.data(matrix)
+				.each(Row);
+
+	function Row(r) 
+	{	
+		var cell = d3.select(this).selectAll(".cell")
+					.data(r.filter(function(d) { return d.z; }))
+					.style("fill-opacity", function(d) { return z(d.z); })
+					.style("fill", function(d) { return color(d.z);});
+		
+		var  text = d3.select(this).selectAll(".celltext")
+					.data(r.filter(function(d) { return d.z; }))
+					.text(function(d){return d.z == 1?" ":Math.floor(d.z*100)/100; })
+	}	
+}
+
+var computeDistance = function(ra, rb, jacc)
+{
+	var step   = 5;
+	var dmax   = ra + rb;
+	var dmin   = 0;
+	var error  = 10000;
+	var expectArea = jacc / (1 + jacc) * Math.PI * (ra * ra + rb * rb);
+	var d;
+	for(var di =  dmin; di <= dmax; di += step)
+	{
+		var a = Math.acos((ra * ra + di * di - rb * rb)/(2 * ra * di));
+		var b = Math.acos((rb * rb + di * di - ra * ra)/(2 * rb * di));	
+		
+		var area  = (a - Math.sin(2*a)) * ra * ra;
+			area += (b - Math.sin(2*b)) * rb * rb;
+					
+		if (Math.abs(area - expectArea) < error)
+		{
+			d = di;
+			error = Math.abs(area - expectArea);
+		}
+	}
+	return d;
+}
+/***********************dislpay map****************************/ 
+	var body = document.getElementById('map');
+	var element = document.createElement('img');
+	element.src= "data/gray.png";
+	element.className = "png";
+	body.appendChild(element);
+	function addElement(str){
+		fileName = "data/view/" + str + ".png";
+		var body = document.getElementById('map');
+		var element = document.createElement('img');
+		id = "view" + str;
+		element.src= fileName;
+		element.id = id;
+		element.className = "png";
+		body.appendChild(element);	
+	}
+
+	function removeElement(str){
+		fileName = "data/view/" + str + ".png";
+		id = "view" + str;
+		var body = document.getElementById('map');
+		var element = document.getElementById(id);
+		body.removeChild(element);
+	}
+
+	function addPoint(x, y){
+		var element = document.createElement('canvas');
+		var body = document.getElementById('map');
+		id = "point" + x + y;
+		// element.id = "point";
+		element.width = 500;
+		element.height = 500;	
+		element.id = id
+		var cans = element.getContext('2d');
+		cans.beginPath();
+		cans.arc(x,y,3,0,Math.PI*2, true);
+		cans.closePath();
+		cans.fillStyle = 'yellow';
+		cans.fill();
+		body.appendChild(element);
+	}
+
+	function removePoint(x, y){
+		id = "point" + x + y;
+		var body = document.getElementById('map');
+		var element = document.getElementById(id);
+		body.removeChild(element);
+	}
+/*****************************************************************/
+	displayMatrix();
+
+</script>
