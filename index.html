@@ -109,6 +109,7 @@ text.bar_text {
 <script src = './data/idDbGroup.js'></script>
 <script src = './data/lbDbGroup.js'></script>
 <script src = './data/groupRep.js'></script>
+<script src = './data/trackData.js'></script>
 <script src="id_position.js" type="text/javascript"></script>
 <script type= "text/javascript">
 
@@ -469,11 +470,11 @@ var computeDistance = function(ra, rb, jacc)
 		var element = document.getElementById(id);
 		body.removeChild(element);
 	}
-
+	
 	function addPoint(x, y){
 		var element = document.createElement('canvas');
 		var body = document.getElementById('map');
-		id = "point" + x + y;
+		id = "point" + x + " " + y;
 		// element.id = "point";
 		element.width = 500;
 		element.height = 500;	
@@ -488,12 +489,11 @@ var computeDistance = function(ra, rb, jacc)
 	}
 
 	function removePoint(x, y){
-		id = "point" + x + y;
+		id = "point" + x + " " + y;
 		var body = document.getElementById('map');
 		var element = document.getElementById(id);
 		body.removeChild(element);
 	}
 /*****************************************************************/
 	displayMatrix();
-	selectActionData(groupRep)
 </script>

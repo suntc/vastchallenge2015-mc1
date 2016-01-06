@@ -26,6 +26,7 @@ function refreshGraph(actionData) {
 		.data(actionDataArray(actionData))
 	    .enter().append("g")
 		.attr("class", "bar")
+		.attr("person_id", function(d) { return d.id; })
 		.attr("transform", function(d, i) { return "translate(0," + (i * (dh + 4) + beginY) + ")"; })
 		.on("click",showGroupDetail);
 		
@@ -73,6 +74,19 @@ function Bar(bar) {
 				.attr("class", "grid")
 				.attr("x", function(d, i) { return i * dw + beginX; })
 				.style("fill", getColor)
+				.on("mouseover", function(d, i) {
+					var person_id = d3.select(this.parentNode).attr("person_id")
+					var points = trackData[person_id][i * 2];
+					for (var point of points) {
+						addPoint(point[0], point[1]);
+					}
+				})
+				.on("mouseout", function(d, i) {
+					var person_id = d3.select(this.parentNode).attr("person_id")
+					var points = trackData[person_id][i * 2];
+					for (var point of points)
+						removePoint(point[0], point[1]);
+				});
 }
 
 function getOdd(d, i) {
@@ -122,14 +136,14 @@ var getColor = (function() {
 			return "royalblue";
 		case 32: case 63: case 64: case 61:
 			// shows & entertainment
-			lastColor = "linegreen";
+			lastColor = "limegreen";
 			return "limegreen";
 		case 60: case 62:
 			// info & assistence
 			lastColor = "yellow";
 			return "yellow";
 		default:
-			lastColor = "yellow";
+			lastColor = "black";
 			return "black";
 		}
 	}
