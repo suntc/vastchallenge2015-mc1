@@ -60,7 +60,7 @@ text.rowtext
 {
  position	: absolute;
  height		: auto;
- left		: 600px;
+ left		: 650px;
  top		: 0px;
  bottom		: 40px;
  width		: 48%;
@@ -68,9 +68,11 @@ text.rowtext
 
 #id_position {
 	position: absolute;
-	height: auto;
 	left: 2px;
-	top: 760px;
+	top: 720px;
+	height: 250px;
+	width: 680px;
+	overflow: scroll;
 	bottom: 40px;
 	width: 100%;
 }
@@ -132,6 +134,8 @@ var siteNum = gridData.length
 var grids = 32
 var mx = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(grids))
 var my = d3.scale.ordinal().rangeBands([0, height]).domain(d3.range(siteNum))
+var map_width = 600;
+var zoom = map_width / 100;
 
 var sitecolor = ["#e31a1c","#6baed6","#99CC33","#fb9a99","#999999","#fd8d3c","#b15928","#1c9099","#6a3d9a"]
 var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","","","16:00","","","","18:00","","","","20:00","","","","22:00","","","",]
@@ -471,25 +475,28 @@ var computeDistance = function(ra, rb, jacc)
 		body.removeChild(element);
 	}
 	
-	function addPoint(x, y){
+	var pointsColor = d3.interpolateRgb("#ffff00", "#efefef");
+
+	function addPoint(x, y, p) {
+		if (!p)	p = 0;
 		var element = document.createElement('canvas');
 		var body = document.getElementById('map');
-		id = "point" + x + " " + y;
+		id = "point" + x + "_" + y;
 		// element.id = "point";
-		element.width = 500;
-		element.height = 500;	
+		element.width = width;
+		element.height = width;	
 		element.id = id
 		var cans = element.getContext('2d');
 		cans.beginPath();
-		cans.arc(x,y,3,0,Math.PI*2, true);
+		cans.arc(zoom * x,zoom * (100-y),4,0,Math.PI*2, true);
 		cans.closePath();
-		cans.fillStyle = 'yellow';
+		cans.fillStyle = pointsColor(p);
 		cans.fill();
 		body.appendChild(element);
 	}
 
 	function removePoint(x, y){
-		id = "point" + x + " " + y;
+		id = "point" + x + "_" + y;
 		var body = document.getElementById('map');
 		var element = document.getElementById(id);
 		body.removeChild(element);
