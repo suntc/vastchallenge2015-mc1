@@ -10,22 +10,13 @@
 	stroke:rgb(70,70,70);
 }
 
-
-
-text.rowtext
+text.rowtext222
 {
   font-size		:	8pt;
   color			:   #9D9DB;
 }
 
-
-.ptext
-{
-  font-size		:	15pt;
-  font-family	: 	Microsoft YaHei;
-  color			:   #9D9DB;
-}
-#title
+#title222
 {
  position :	absolute;
  height	  :	1px;
@@ -34,7 +25,7 @@ text.rowtext
  min-width:	900px;
 }
 
-#content
+#content222
 {
  position	: absolute;
  height 	: auto;
@@ -51,7 +42,7 @@ text.rowtext
  position	: absolute;
  height		: auto;
  left		: 2px;
- top		: 100px;
+ top		: 150px;
  bottom		: 40px;
  width		: 35%;
 }
@@ -65,6 +56,41 @@ text.rowtext
  bottom		: 40px;
  width		: 48%;
 }
+#control
+{
+ position	: absolute;
+ height		: auto;
+ left		: 1200px;
+ top		: 600px;
+ bottom		: 40px;
+ width		: 48%;
+}
+
+#arrowtooltip {
+			position: absolute;
+			width: 200px;
+			height: auto;
+			padding: 10px;
+			background-color: white;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			pointer-events: none;
+		}
+			
+		#arrowtooltip.hidden {
+			display: none;
+		}
+			
+		#arrowtooltip p {
+			margin: 0;
+			font-family: sans-serif;
+			font-size: 10px;
+			line-height: 20px;
+		}
 
 #id_position {
 	position: absolute;
@@ -73,15 +99,6 @@ text.rowtext
 	top: 760px;
 	bottom: 40px;
 	width: 100%;
-}
-
-rect.grid {
-	height: 15px;
-	width: 6px;
-}
-
-text.bar_text {
-	font: 10px sans-serif;
 }
 
 .png{position: absolute; height:600px; width:600px;}
@@ -98,8 +115,23 @@ text.bar_text {
 		</div>
 		<div id = "matrix">
 			<div id  = 'matrixcavans'></div>
+			<div id="arrowtooltip" class="hidden">	
+				<p><span id="site_index"></span> </p>
+				<p><span id="people_count"></span> </p>
+			</div>
 		</div>
 		<div id="id_position"></div>
+		<div id="control">
+			<button id="button_intersection" onclick = "clickIntersect()" style="position:absolute; left:0px; top:60px; width:30px; height:30px;">
+				<text id = "text_intersection">∧</text>
+			</button>
+			<button id="button_clear" onclick = "clickClear()" style="position:absolute; left:35px; top:60px; width:45px; height:30px;">
+				<text id = "text_clear">clear</text>
+			</button>
+			<button id="button_done" onclick = "clickDone()" style="position:absolute; left:85px; top:60px; width:45px; height:30px;">
+				<text id = "text_done">done</text>
+			</button>
+		</div>
 	</div>
 </body>
 
@@ -118,6 +150,8 @@ var margin  = {top: 50,top2: 10, right: 80, bottom: 35, left:80},
     width   = 500,//matrix's width
     height  = 700,
 	barPadding = 3;	
+var toolTipwidth = 200;
+var toolTipheight = 120;
 /*	
 var n = nodes.length;	
 var orders = {
@@ -133,23 +167,10 @@ var grids = 32
 var mx = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(grids))
 var my = d3.scale.ordinal().rangeBands([0, height]).domain(d3.range(siteNum))
 
-var sitecolor = ["#e31a1c","#6baed6","#99CC33","#fb9a99","#999999","#fd8d3c","#b15928","#1c9099","#6a3d9a"]
+var sitecolor = ["black","red","steelblue","pink","lightseagreen","midnightblue","gold","royalblue","limegreen","yellow"]
 var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","","","16:00","","","","18:00","","","","20:00","","","","22:00","","","",]
 
-var chosenid = {}
-   
-var svg = d3.select("div#matrixcavans")
-			.append("svg")
-			.attr("width", width + margin.left )
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
-	// The matrix's background
-	svg.append("rect")
-		.attr("class", "MatrixBG")
-		.attr("width", width)
-		.attr("height", height);
+var xPosition, yPosition
 
 ///////functions//////////////////////////////////////////
 /*
@@ -238,22 +259,28 @@ function order(value)
 
 */
 
-function click(p,i)
-{
-	p['ids'].forEach(function(id) {chosenid[id] = 0;})
-	console.log(chosenid)
-	var i = 0;
-	for (var key in chosenid)
-	{
-		i++;
-	}
-	console.log(i)
-}
+var toolTip = function(d) {		
+			//Get this bar's x/y values, then augment for the tooltip
+			//Update the tooltip position and value
+			IdText = "site_id: " + d['id'].toString()
+			CountText = "people_count: " + d['count'].toString()
+			d3.select("#arrowtooltip")
+				.style("left", (xPosition + toolTipwidth / 2).toString() + "px")
+				.style("top",  (yPosition + toolTipheight / 2).toString() + "px")
+				.select("#site_index")
+				.text(IdText)
+			d3.select("#arrowtooltip")
+				.select("#people_count")
+				.text(CountText);
+			   
+				//Show the tooltip
+			d3.select("#arrowtooltip").classed("hidden", false);
+			 }
+
 
 function rowmouseover(p) 
 {
-	//console.log(p['id'])
-	addElement(p['id'].toString())
+	addElement(p['id'].toString());
 }
 
 function rowmouseout(p) 
@@ -281,13 +308,79 @@ var selectActionData = function(p)
 	refreshGraph(selectedActionData);
 }
 
+/***********************button functions****************************/ 
+
+function intersect(a, b) {
+    var t;
+    if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
+    return a.filter(function (e) {
+        if (b.indexOf(e) !== -1) return true;
+    })
+	.filter(function (e, i, c) { // extra step to remove duplicates
+        return c.indexOf(e) === i;
+    });
+}
+var unionIndex = 0;
+var chosenid = [[]];
+
+function clickGrid(p,i)
+{
+	//d3.selectAll(".cell").classed("active", false);
+	//d3.select(this).classed("active",true);
+	d3.select(this).style("fill","#ff0000")
+	p['ids'].forEach(function(id) {chosenid[unionIndex].push(id);})
+	console.log(chosenid)
+}
+
+function clickIntersect()
+{
+	unionIndex++;
+	chosenid.push([])
+}
+
+function clickClear()
+{
+	unionIndex = 0;
+	chosenid = [[]];
+	displayMatrix()
+}
+
+function clickDone()
+{
+	displayIds = chosenid[0].filter(function(item, pos) {
+		return chosenid[0].indexOf(item) == pos;})
+	for (var i = 1; i < chosenid.length; ++i)
+	{
+		displayIds = intersect(displayIds,chosenid[i])
+	}
+	unionIndex = 0;
+	chosenid = [[]];
+	console.log(displayIds)
+	selectActionData(displayIds)
+	displayMatrix()
+}
+
 /***********************dislpay matrix****************************/ 
 var displayMatrix = function()
 {
 
-	var max = 400
+	var max = 140
 	var color = d3.scale.linear().domain([1, max]).range(["rgb(255,255,255)","rgb(44,127,184)"]);
-
+	d3.select('div#matrixcavans').select('svg').remove();
+	var svg = d3.select("div#matrixcavans")
+			.append("svg")
+			.attr("width", width + margin.left )
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	svg.append("rect")
+		.attr("class", "MatrixBG")
+		.attr("width", width)
+		.attr("height", height);
+	
+	svg.on("mouseover", function(){	xPosition = d3.mouse(this)[0];//(d.source.x + d.target.x) / 2;
+									yPosition = d3.mouse(this)[1];})
 	var row = svg.selectAll(".row")
 				.data(gridData)
 				.enter()
@@ -309,8 +402,8 @@ var displayMatrix = function()
 		.attr("dy", ".32em")
 		.attr("text-anchor", "end")
 		.text(function(d, i) { return (d['name'] + ' ' + d['id'])})
-		//.style("color","#0f0f0f");
-		//.style("color",function(d, i) { return sitecolor[d['type']]; });
+		.style("fill", function(d, i) { return sitecolor[d['type']]; })
+		.style("font-size","12px");
 	
 
 	var column = svg.selectAll(".column")
@@ -350,8 +443,13 @@ var displayMatrix = function()
 			.attr("width" , mx.rangeBand())
 			.attr("height", my.rangeBand())
 			.style("fill", function(d) { return color(d['count']);})
-			.on("click",refreshActionData);
-		
+			//.on("click",refreshActionData)
+			.on("click",clickGrid)
+			.on("mouseover",toolTip)
+			.on("mouseout", function() {			   
+				//Hide the tooltip
+				d3.select("#arrowtooltip").classed("hidden", true);					
+			});
 		/*
 		var  text = d3.select(this).selectAll(".celltext")
 			.data(r.filter(function(d) { return d.z; }))
@@ -449,6 +547,8 @@ var computeDistance = function(ra, rb, jacc)
 /***********************dislpay map****************************/ 
 	var body = document.getElementById('map');
 	var element = document.createElement('img');
+	var width = 600;
+	var zoom = width / 100;
 	element.src= "data/gray.png";
 	element.className = "png";
 	body.appendChild(element);
@@ -471,19 +571,22 @@ var computeDistance = function(ra, rb, jacc)
 		body.removeChild(element);
 	}
 	
-	function addPoint(x, y){
+	var pointsColor = d3.interpolateRgb("#ffff00", "#efefef");
+
+	function addPoint(x, y, p){
+		if (!p)	p = 0;
 		var element = document.createElement('canvas');
 		var body = document.getElementById('map');
-		id = "point" + x + " " + y;
+		id = "point" + x + "_" + y;
 		// element.id = "point";
-		element.width = 500;
-		element.height = 500;	
+		element.width = width;
+		element.height = width;	
 		element.id = id
 		var cans = element.getContext('2d');
 		cans.beginPath();
-		cans.arc(x,y,3,0,Math.PI*2, true);
+		cans.arc(zoom * x,zoom * (100-y),4,0,Math.PI*2, true);
 		cans.closePath();
-		cans.fillStyle = 'yellow';
+		cans.fillStyle = pointsColor(p);
 		cans.fill();
 		body.appendChild(element);
 	}
