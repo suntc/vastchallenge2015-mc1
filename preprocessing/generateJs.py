@@ -19,11 +19,13 @@ def gridData():
         infoDic = {"id": 0,"type":0,"name":"hi","vector":[]}
         g = {"count":0,"ids":[]} ### vector[]'s member
         type = siteInfo[id][0]
+        name = siteInfo[id][1]
         infoDic["id"] = id
         infoDic["type"] = type
+        infoDic["name"] = name
         grids = siteVector[id]
         for item in grids:
-            g = {"count":len(list(set(item[1]))),"ids":list(set(item[1]))} ### vector[]'s member
+            g = {"count":len(list(set(item[1]))),"ids":list(set(item[1])),"id":id} ### vector[]'s member
             infoDic["vector"].append(g)
         gridData.append(infoDic)
     output = open("../data/gridData.js","wb")
