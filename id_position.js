@@ -8,6 +8,11 @@ var id_position_w = 680,
 
 refreshGraph({});
 
+function showGroupDetail(p)
+{
+	selectActionData(lbDbGroup[idDbGroup[p['id']].toString()])
+}
+
 function refreshGraph(actionData) {
 	// Given new data, refresh the graph
 	d3.select('#id_position').select('svg').remove();
@@ -21,13 +26,15 @@ function refreshGraph(actionData) {
 		.data(actionDataArray(actionData))
 	    .enter().append("g")
 		.attr("class", "bar")
-		.attr("transform", function(d, i) { return "translate(0," + (i * (dh + 4) + beginY) + ")"; });
-
+		.attr("transform", function(d, i) { return "translate(0," + (i * (dh + 4) + beginY) + ")"; })
+		.on("click",showGroupDetail);
+		
 	bars.append("rect")
 		.attr("x", beginX)
 		.attr("height", dh)
 		.attr("width", tw)
 		.style("fill", "whitesmoke");
+		
 	bars.each(Bar);
 
 	bars.append("text")
@@ -56,6 +63,7 @@ function actionDataArray(actionData) {
 	}
 	return array;
 }
+
 
 function Bar(bar) {
 	var grid = d3.select(this).selectAll(".grid")
