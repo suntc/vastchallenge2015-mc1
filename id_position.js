@@ -26,6 +26,7 @@ function refreshGraph(actionData) {
 		.data(actionDataArray(actionData))
 	    .enter().append("g")
 		.attr("class", "bar")
+		.attr("person_id", function(d) { return d.id; })
 		.attr("transform", function(d, i) { return "translate(0," + (i * (dh + 4) + beginY) + ")"; })
 		.on("click",showGroupDetail);
 		
@@ -64,7 +65,6 @@ function actionDataArray(actionData) {
 	return array;
 }
 
-
 function Bar(bar) {
 	var grid = d3.select(this).selectAll(".grid")
 				.data(function(d) { return d.path.filter(getOdd); })
@@ -73,6 +73,20 @@ function Bar(bar) {
 				.attr("class", "grid")
 				.attr("x", function(d, i) { return i * dw + beginX; })
 				.style("fill", getColor)
+				.on("mouseover", function(d, i) {
+					var person_id = d3.select(this.parentNode).attr("person_id")
+					var points = trackData[person_id][i * 2];
+					for (var i = 0; i < points.length; i++) {
+						var point = points[i];
+						addPoint(point[0], point[1], i / points.length);
+					}
+				})
+				.on("mouseout", function(d, i) {
+					var person_id = d3.select(this.parentNode).attr("person_id")
+					var points = trackData[person_id][i * 2];
+					for (var point of points)
+						removePoint(point[0], point[1]);
+				});
 }
 
 function getOdd(d, i) {
@@ -129,7 +143,7 @@ var getColor = (function() {
 			lastColor = "yellow";
 			return "yellow";
 		default:
-			lastColor = "yellow";
+			lastColor = "black";
 			return "black";
 		}
 	}
