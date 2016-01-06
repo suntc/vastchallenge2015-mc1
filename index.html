@@ -546,6 +546,8 @@ var computeDistance = function(ra, rb, jacc)
 /***********************dislpay map****************************/ 
 	var body = document.getElementById('map');
 	var element = document.createElement('img');
+	var width = 600;
+	var zoom = width / 100;
 	element.src= "data/gray.png";
 	element.className = "png";
 	body.appendChild(element);
@@ -571,14 +573,14 @@ var computeDistance = function(ra, rb, jacc)
 	function addPoint(x, y){
 		var element = document.createElement('canvas');
 		var body = document.getElementById('map');
-		id = "point" + x + y;
+		id = "point" + x + "_" + y;
 		// element.id = "point";
-		element.width = 500;
-		element.height = 500;	
+		element.width = width;
+		element.height = width;	
 		element.id = id
 		var cans = element.getContext('2d');
 		cans.beginPath();
-		cans.arc(x,y,3,0,Math.PI*2, true);
+		cans.arc(zoom * x,zoom * (100-y),4,0,Math.PI*2, true);
 		cans.closePath();
 		cans.fillStyle = 'yellow';
 		cans.fill();
@@ -593,5 +595,6 @@ var computeDistance = function(ra, rb, jacc)
 	}
 /*****************************************************************/
 	displayMatrix();
+	addPoint(50,50)
 	//selectActionData(groupRep)
 </script>
