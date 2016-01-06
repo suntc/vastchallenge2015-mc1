@@ -51,7 +51,7 @@ text.rowtext222
 {
  position	: absolute;
  height		: auto;
- left		: 600px;
+ left		: 650px;
  top		: 0px;
  bottom		: 40px;
  width		: 48%;
@@ -94,9 +94,11 @@ text.rowtext222
 
 #id_position {
 	position: absolute;
-	height: auto;
 	left: 2px;
-	top: 760px;
+	top: 720px;
+	height: 250px;
+	width: 680px;
+	overflow: scroll;
 	bottom: 40px;
 	width: 100%;
 }
@@ -166,6 +168,8 @@ var siteNum = gridData.length
 var grids = 32
 var mx = d3.scale.ordinal().rangeBands([0, width]).domain(d3.range(grids))
 var my = d3.scale.ordinal().rangeBands([0, height]).domain(d3.range(siteNum))
+var map_width = 600;
+var zoom = map_width / 100;
 
 var sitecolor = ["black","red","steelblue","pink","lightseagreen","midnightblue","gold","royalblue","limegreen","yellow"]
 var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","","","16:00","","","","18:00","","","","20:00","","","","22:00","","","",]
@@ -573,7 +577,7 @@ var computeDistance = function(ra, rb, jacc)
 	
 	var pointsColor = d3.interpolateRgb("#ffff00", "#efefef");
 
-	function addPoint(x, y, p){
+	function addPoint(x, y, p) {
 		if (!p)	p = 0;
 		var element = document.createElement('canvas');
 		var body = document.getElementById('map');
@@ -592,7 +596,7 @@ var computeDistance = function(ra, rb, jacc)
 	}
 
 	function removePoint(x, y){
-		id = "point" + x + " " + y;
+		id = "point" + x + "_" + y;
 		var body = document.getElementById('map');
 		var element = document.getElementById(id);
 		body.removeChild(element);

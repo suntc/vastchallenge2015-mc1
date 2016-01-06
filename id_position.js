@@ -77,8 +77,9 @@ function Bar(bar) {
 				.on("mouseover", function(d, i) {
 					var person_id = d3.select(this.parentNode).attr("person_id")
 					var points = trackData[person_id][i * 2];
-					for (var point of points) {
-						addPoint(point[0], point[1]);
+					for (var i = 0; i < points.length; i++) {
+						var point = points[i];
+						addPoint(point[0], point[1], i / points.length);
 					}
 				})
 				.on("mouseout", function(d, i) {
