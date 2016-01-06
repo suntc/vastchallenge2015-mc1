@@ -65,7 +65,6 @@ function actionDataArray(actionData) {
 	return array;
 }
 
-
 function Bar(bar) {
 	var grid = d3.select(this).selectAll(".grid")
 				.data(function(d) { return d.path.filter(getOdd); })

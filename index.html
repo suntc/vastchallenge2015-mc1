@@ -42,7 +42,7 @@ text.rowtext222
  position	: absolute;
  height		: auto;
  left		: 2px;
- top		: 150px;
+ top		: 100px;
  bottom		: 40px;
  width		: 35%;
 }
@@ -100,7 +100,15 @@ text.rowtext222
 	width: 680px;
 	overflow: scroll;
 	bottom: 40px;
-	width: 100%;
+}
+
+rect.grid {
+	height: 15px;
+	width: 6px;
+}
+
+text.bar_text {
+	font: 10px sans-serif;
 }
 
 .png{position: absolute; height:600px; width:600px;}
@@ -551,8 +559,6 @@ var computeDistance = function(ra, rb, jacc)
 /***********************dislpay map****************************/ 
 	var body = document.getElementById('map');
 	var element = document.createElement('img');
-	var width = 600;
-	var zoom = width / 100;
 	element.src= "data/gray.png";
 	element.className = "png";
 	body.appendChild(element);
