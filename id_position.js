@@ -122,7 +122,7 @@ var getColor = (function() {
 			return "royalblue";
 		case 32: case 63: case 64: case 61:
 			// shows & entertainment
-			lastColor = "linegreen";
+			lastColor = "limegreen";
 			return "limegreen";
 		case 60: case 62:
 			// info & assistence
