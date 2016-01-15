@@ -10,33 +10,6 @@
 	stroke:rgb(70,70,70);
 }
 
-text.rowtext222
-{
-  font-size		:	8pt;
-  color			:   #9D9DB;
-}
-
-#title222
-{
- position :	absolute;
- height	  :	1px;
- width    :	100%;
- top	  :	0px;
- min-width:	900px;
-}
-
-#content222
-{
- position	: absolute;
- height 	: auto;
- top		: 5px;
- bottom		: 20px;
- width		: 100%;
- border-top	: solid #c3c3c3 2px;
- min-width	: 900px;
- min-height	: 900px;
-}
-
 #map
 {
  position	: absolute;
@@ -173,15 +146,6 @@ var margin  = {top: 50,top2: 10, right: 80, bottom: 35, left:165},
 	barPadding = 3;	
 var toolTipwidth = 200;
 var toolTipheight = 120;
-/*	
-var n = nodes.length;	
-var orders = {
-	name	: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
-	count	: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
-	number	: d3.range(n).sort(function(a, b) { return nodes[b].number - nodes[a].number; })
-};
-*/
-//var timeout = setTimeout(timeoutFunc, 5000);	
 
 var siteNum = gridData.length
 var grids = 32
@@ -195,92 +159,6 @@ var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","
 
 var xPosition, yPosition
 
-///////functions//////////////////////////////////////////
-/*
-function onInput(inputValue)
-{
-	document.querySelector("#rangeL").value = (100 - inputValue) / 100 ;//show range value.
-	document.querySelector("#rangeR").value = inputValue / 100 ;
-}
-
-var timeoutFunc = function()
-				{
-					order("name");
-					d3.select("#order").property("selectedIndex", 2).node().focus();
-				};
-		
-function click(p)
-{
-	d3.selectAll(".celltext").classed("active", false);
-	d3.select(this).classed("active",true);
-	nameA = nodes[p.y].name;
-	nameB = nodes[p.x].name;
-		
-	//display materials word cloud
-	switch(displayState)
-	{
-		case 1:displayMaterials("mainMaterials",nameA,nameB,false);break;
-		case 2:displayMaterials("spices",nameA,nameB,false);break;
-		case 3:displayMaterials("mix",nameA,nameB,false);break;
-	};
-			
-	//display histogram	
-	datasetA = 	techVector[nameA].concat();
-	datasetB =  techVector[nameB].concat();
-	offset   = width2 / datasetA.length;
- 	barWidth = (offset - barPadding) / 2;
-		
-	hsvg.selectAll("rect#rectl")
-		.data(datasetA)
-		.transition()
-		.duration(1000)
-		.attr("x", function(d, i) {return i * offset;})
-		.attr("y", function(d) {return height2 - hscale(d);})
-		.attr("height", function(d) {return hscale(d);})
-		.attr("width" , barWidth)
-		.attr("fill"  , "rgb(179,205,227)");
-			
-	hsvg.selectAll("rect#rectr")
-		.data(datasetB)
-		.transition()
-		.duration(1000)
-		.attr("x", function(d, i) {return i * offset + barWidth;})
-		.attr("y", function(d) {return height2 - hscale(d);})
-		.attr("height", function(d) {return hscale(d);})
-		.attr("width" , barWidth)
-		.attr("fill"  , "rgb(251,180,174)");
-		
-	// refresh histogram's tag	
-	tag.select("text.histogramTag1")	
-		.text(translation(nameA));
-	   
-	tag.select("text.histogramTag2")		
-		.text(translation(nameB));			
-}
-	
-function order(value) 
-{
-	x.domain(orders[value]);
-	var t = svg.transition().duration(1500);
-
-	var tempRow = t.selectAll(".row")
-			.delay(function(d, i) { return x(i) * 4; })
-			.attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; });
-		 
-		tempRow.selectAll(".cell")
-			.delay(function(d) { return x(d.x) * 4; })
-			.attr("x", function(d) { return x(d.x); });
-			
-		tempRow.selectAll(".celltext")
-			.delay(function(d) { return x(d.x) * 4; })
-			.attr("x", function(d) { return x(d.x); });
-
-		t.selectAll(".column")
-         .delay(function(d, i) { return x(i) * 4; })
-         .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
-}
-
-*/
 
 var toolTip = function(d) {		
 			//Get this bar's x/y values, then augment for the tooltip
@@ -447,14 +325,7 @@ var displayMatrix = function()
 			.attr("dy", ".32em")
 			.attr("text-anchor", "start")
 			.text(function(d, i) { return indexTime[i]; });
-  	
-	/*
-	d3.select("#order").on("change", 
-		function() {
-			clearTimeout(timeout);
-			order(this.value);
-		});	
-	*/	
+
 	function Row(r) 
 	{
 		var cell = d3.select(this).selectAll(".cell")
@@ -473,20 +344,6 @@ var displayMatrix = function()
 				//Hide the tooltip
 				d3.select("#arrowtooltip").classed("hidden", true);					
 			});
-		/*
-		var  text = d3.select(this).selectAll(".celltext")
-			.data(r.filter(function(d) { return d.z; }))
-			.enter()
-			.append("text")
-			.attr("class", "celltext")
-			.attr("cursor","pointer")
-			.attr("x", function(d) { return x(d.x); })
-			.attr("y", x.rangeBand()/2)
-			.text(function(d){return d.z == 1?" ":Math.floor(d.z*100)/100; })
-			.on("mouseover", mouseover)
-			.on("mouseout", mouseout)
-			.on("click",click);
-		*/
 	}
 }
 
