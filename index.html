@@ -400,30 +400,6 @@ var rangeValueChanged = function(newValue)
 	}	
 }
 
-var computeDistance = function(ra, rb, jacc)
-{
-	var step   = 5;
-	var dmax   = ra + rb;
-	var dmin   = 0;
-	var error  = 10000;
-	var expectArea = jacc / (1 + jacc) * Math.PI * (ra * ra + rb * rb);
-	var d;
-	for(var di =  dmin; di <= dmax; di += step)
-	{
-		var a = Math.acos((ra * ra + di * di - rb * rb)/(2 * ra * di));
-		var b = Math.acos((rb * rb + di * di - ra * ra)/(2 * rb * di));	
-		
-		var area  = (a - Math.sin(2*a)) * ra * ra;
-			area += (b - Math.sin(2*b)) * rb * rb;
-					
-		if (Math.abs(area - expectArea) < error)
-		{
-			d = di;
-			error = Math.abs(area - expectArea);
-		}
-	}
-	return d;
-}
 /***********************dislpay map****************************/ 
 	var body = document.getElementById('map');
 	var element = document.createElement('img');
