@@ -23,7 +23,7 @@ def gridData():
         infoDic["type"] = type
         grids = siteVector[id]
         for item in grids:
-            g = {"count":item[0],"ids":item[1]} ### vector[]'s member
+            g = {"count":len(list(set(item[1]))),"ids":list(set(item[1]))} ### vector[]'s member
             infoDic["vector"].append(g)
         gridData.append(infoDic)
     output = open("../data/gridData.js","wb")

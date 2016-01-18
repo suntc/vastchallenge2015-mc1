@@ -4,37 +4,10 @@
 <title>Vast Challenge 2015 MC-1</title>
 <style>
 @import url(./Matrix.css);
-.MatrixBG 
+.MatrixBG
 {
 	stroke-width:2;
 	stroke:rgb(70,70,70);
-}
-
-text.rowtext222
-{
-  font-size		:	8pt;
-  color			:   #9D9DB;
-}
-
-#title222
-{
- position :	absolute;
- height	  :	1px;
- width    :	100%;
- top	  :	0px;
- min-width:	900px;
-}
-
-#content222
-{
- position	: absolute;
- height 	: auto;
- top		: 5px;
- bottom		: 20px;
- width		: 100%;
- border-top	: solid #c3c3c3 2px;
- min-width	: 900px;
- min-height	: 900px;
 }
 
 #map
@@ -80,11 +53,11 @@ text.rowtext222
 			box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 			pointer-events: none;
 		}
-			
+
 		#arrowtooltip.hidden {
 			display: none;
 		}
-			
+
 		#arrowtooltip p {
 			margin: 0;
 			font-family: sans-serif;
@@ -104,7 +77,7 @@ text.rowtext222
 
 #bar_chart {
 	position: absolute;
-	left: 1300px;
+	left: 1400px;
 	top: 0px;
 	width: 600px;
 	bottom: 40px;
@@ -127,14 +100,14 @@ text.bar_text {
 <header>
 </header>
 <body>
-	<div id = 'title'> 
+	<div id = 'title'>
 	</div>
 	<div id = 'content'>
 		<div id = "map">
 		</div>
 		<div id = "matrix">
 			<div id  = 'matrixcavans'></div>
-			<div id="arrowtooltip" class="hidden">	
+			<div id="arrowtooltip" class="hidden">
 				<p><span id="site_index"></span> </p>
 				<p><span id="people_count"></span> </p>
 			</div>
@@ -167,21 +140,12 @@ text.bar_text {
 <script type= "text/javascript">
 
 //Global variables.
-var margin  = {top: 50,top2: 10, right: 80, bottom: 35, left:80},
+var margin  = {top: 50,top2: 10, right: 80, bottom: 35, left:165},
     width   = 500,//matrix's width
     height  = 700,
-	barPadding = 3;	
+	barPadding = 3;
 var toolTipwidth = 200;
 var toolTipheight = 120;
-/*	
-var n = nodes.length;	
-var orders = {
-	name	: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
-	count	: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
-	number	: d3.range(n).sort(function(a, b) { return nodes[b].number - nodes[a].number; })
-};
-*/
-//var timeout = setTimeout(timeoutFunc, 5000);	
 
 var siteNum = gridData.length
 var grids = 32
@@ -195,94 +159,8 @@ var indexTime = ["08:00","","","","10:00","","","","12:00","","","","14:00","","
 
 var xPosition, yPosition
 
-///////functions//////////////////////////////////////////
-/*
-function onInput(inputValue)
-{
-	document.querySelector("#rangeL").value = (100 - inputValue) / 100 ;//show range value.
-	document.querySelector("#rangeR").value = inputValue / 100 ;
-}
 
-var timeoutFunc = function()
-				{
-					order("name");
-					d3.select("#order").property("selectedIndex", 2).node().focus();
-				};
-		
-function click(p)
-{
-	d3.selectAll(".celltext").classed("active", false);
-	d3.select(this).classed("active",true);
-	nameA = nodes[p.y].name;
-	nameB = nodes[p.x].name;
-		
-	//display materials word cloud
-	switch(displayState)
-	{
-		case 1:displayMaterials("mainMaterials",nameA,nameB,false);break;
-		case 2:displayMaterials("spices",nameA,nameB,false);break;
-		case 3:displayMaterials("mix",nameA,nameB,false);break;
-	};
-			
-	//display histogram	
-	datasetA = 	techVector[nameA].concat();
-	datasetB =  techVector[nameB].concat();
-	offset   = width2 / datasetA.length;
- 	barWidth = (offset - barPadding) / 2;
-		
-	hsvg.selectAll("rect#rectl")
-		.data(datasetA)
-		.transition()
-		.duration(1000)
-		.attr("x", function(d, i) {return i * offset;})
-		.attr("y", function(d) {return height2 - hscale(d);})
-		.attr("height", function(d) {return hscale(d);})
-		.attr("width" , barWidth)
-		.attr("fill"  , "rgb(179,205,227)");
-			
-	hsvg.selectAll("rect#rectr")
-		.data(datasetB)
-		.transition()
-		.duration(1000)
-		.attr("x", function(d, i) {return i * offset + barWidth;})
-		.attr("y", function(d) {return height2 - hscale(d);})
-		.attr("height", function(d) {return hscale(d);})
-		.attr("width" , barWidth)
-		.attr("fill"  , "rgb(251,180,174)");
-		
-	// refresh histogram's tag	
-	tag.select("text.histogramTag1")	
-		.text(translation(nameA));
-	   
-	tag.select("text.histogramTag2")		
-		.text(translation(nameB));			
-}
-	
-function order(value) 
-{
-	x.domain(orders[value]);
-	var t = svg.transition().duration(1500);
-
-	var tempRow = t.selectAll(".row")
-			.delay(function(d, i) { return x(i) * 4; })
-			.attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; });
-		 
-		tempRow.selectAll(".cell")
-			.delay(function(d) { return x(d.x) * 4; })
-			.attr("x", function(d) { return x(d.x); });
-			
-		tempRow.selectAll(".celltext")
-			.delay(function(d) { return x(d.x) * 4; })
-			.attr("x", function(d) { return x(d.x); });
-
-		t.selectAll(".column")
-         .delay(function(d, i) { return x(i) * 4; })
-         .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
-}
-
-*/
-
-var toolTip = function(d) {		
+var toolTip = function(d) {
 			//Get this bar's x/y values, then augment for the tooltip
 			//Update the tooltip position and value
 			IdText = "site_id: " + d['id'].toString()
@@ -295,18 +173,18 @@ var toolTip = function(d) {
 			d3.select("#arrowtooltip")
 				.select("#people_count")
 				.text(CountText);
-			   
+
 				//Show the tooltip
 			d3.select("#arrowtooltip").classed("hidden", false);
 			 }
 
 
-function rowmouseover(p) 
+function rowmouseover(p)
 {
 	addElement(p['id'].toString());
 }
 
-function rowmouseout(p) 
+function rowmouseout(p)
 {
 	//console.log("mouseout")
 	removeElement(p['id'].toString())
@@ -331,7 +209,7 @@ var selectActionData = function(p)
 	refreshGraph(selectedActionData);
 }
 
-/***********************button functions****************************/ 
+/***********************button functions****************************/
 
 function intersect(a, b) {
     var t;
@@ -383,7 +261,7 @@ function clickDone()
 	displayMatrix()
 }
 
-/***********************dislpay matrix****************************/ 
+/***********************dislpay matrix****************************/
 var displayMatrix = function()
 {
 
@@ -396,12 +274,12 @@ var displayMatrix = function()
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
+
 	svg.append("rect")
 		.attr("class", "MatrixBG")
 		.attr("width", width)
 		.attr("height", height);
-	
+
 	svg.on("mouseover", function(){	xPosition = d3.mouse(this)[0];//(d.source.x + d.target.x) / 2;
 									yPosition = d3.mouse(this)[1];})
 	var row = svg.selectAll(".row")
@@ -427,7 +305,7 @@ var displayMatrix = function()
 		.text(function(d, i) { return (d['name'] + ' ' + d['id'])})
 		.style("fill", function(d, i) { return sitecolor[d['type']]; })
 		.style("font-size","12px");
-	
+
 
 	var column = svg.selectAll(".column")
 		.data(d3.range(grids))
@@ -447,15 +325,8 @@ var displayMatrix = function()
 			.attr("dy", ".32em")
 			.attr("text-anchor", "start")
 			.text(function(d, i) { return indexTime[i]; });
-  	
-	/*
-	d3.select("#order").on("change", 
-		function() {
-			clearTimeout(timeout);
-			order(this.value);
-		});	
-	*/	
-	function Row(r) 
+
+	function Row(r)
 	{
 		var cell = d3.select(this).selectAll(".cell")
 			.data(function(d) { return d["vector"]; })
@@ -469,24 +340,10 @@ var displayMatrix = function()
 			//.on("click",refreshActionData)
 			.on("click",clickGrid)
 			.on("mouseover",toolTip)
-			.on("mouseout", function() {			   
+			.on("mouseout", function() {
 				//Hide the tooltip
-				d3.select("#arrowtooltip").classed("hidden", true);					
+				d3.select("#arrowtooltip").classed("hidden", true);
 			});
-		/*
-		var  text = d3.select(this).selectAll(".celltext")
-			.data(r.filter(function(d) { return d.z; }))
-			.enter()
-			.append("text")
-			.attr("class", "celltext")
-			.attr("cursor","pointer")
-			.attr("x", function(d) { return x(d.x); })
-			.attr("y", x.rangeBand()/2)
-			.text(function(d){return d.z == 1?" ":Math.floor(d.z*100)/100; })
-			.on("mouseover", mouseover)
-			.on("mouseout", mouseout)
-			.on("click",click);
-		*/
 	}
 }
 
@@ -494,8 +351,8 @@ var rangeValueChanged = function(newValue)
 {
 	var p = newValue / 100;
 	var matrix = [],
-        links  = [];	
-		
+        links  = [];
+
 	for(var i = 0; i < linksTech.length; i++)
 	{
 		var temp = {};
@@ -504,11 +361,11 @@ var rangeValueChanged = function(newValue)
 		temp["value"]  = linksTech[i]["value"] * p + linksMater[i]["value"] * (1 - p);
 		links.push(temp);
 	}
-	
+
 	var min   = d3.min(links,function(d){return d["value"]});
 	var color = d3.scale.linear().domain([min, 1]).range(["rgb(127,205,187)","rgb(44,127,184)"]),
 	    z 	  = d3.scale.linear().domain([min, 1]).range([min,1]).clamp(true);
-		
+
     // Compute index per node.
 	nodes.forEach(function(node, i) {
 			node.index = i;
@@ -517,7 +374,7 @@ var rangeValueChanged = function(newValue)
 		});
 
     // Convert links to matrix; count character occurrences.
-    links.forEach(function(link) 
+    links.forEach(function(link)
 	{
 		matrix[link.source][link.target].z += link.value;
 		if(link.target != link.source)
@@ -525,49 +382,25 @@ var rangeValueChanged = function(newValue)
 		nodes[link.source].count += link.value;
 		nodes[link.target].count += link.value;
      });
-	 		
+
 	var row = svg.selectAll(".row")
 				.data(matrix)
 				.each(Row);
 
-	function Row(r) 
-	{	
+	function Row(r)
+	{
 		var cell = d3.select(this).selectAll(".cell")
 					.data(r.filter(function(d) { return d.z; }))
 					.style("fill-opacity", function(d) { return z(d.z); })
 					.style("fill", function(d) { return color(d.z);});
-		
+
 		var  text = d3.select(this).selectAll(".celltext")
 					.data(r.filter(function(d) { return d.z; }))
 					.text(function(d){return d.z == 1?" ":Math.floor(d.z*100)/100; })
-	}	
+	}
 }
 
-var computeDistance = function(ra, rb, jacc)
-{
-	var step   = 5;
-	var dmax   = ra + rb;
-	var dmin   = 0;
-	var error  = 10000;
-	var expectArea = jacc / (1 + jacc) * Math.PI * (ra * ra + rb * rb);
-	var d;
-	for(var di =  dmin; di <= dmax; di += step)
-	{
-		var a = Math.acos((ra * ra + di * di - rb * rb)/(2 * ra * di));
-		var b = Math.acos((rb * rb + di * di - ra * ra)/(2 * rb * di));	
-		
-		var area  = (a - Math.sin(2*a)) * ra * ra;
-			area += (b - Math.sin(2*b)) * rb * rb;
-					
-		if (Math.abs(area - expectArea) < error)
-		{
-			d = di;
-			error = Math.abs(area - expectArea);
-		}
-	}
-	return d;
-}
-/***********************dislpay map****************************/ 
+/***********************dislpay map****************************/
 	var body = document.getElementById('map');
 	var element = document.createElement('img');
 	element.src= "data/gray.png";
@@ -581,7 +414,7 @@ var computeDistance = function(ra, rb, jacc)
 		element.src= fileName;
 		element.id = id;
 		element.className = "png";
-		body.appendChild(element);	
+		body.appendChild(element);
 	}
 
 	function removeElement(str){
@@ -591,7 +424,7 @@ var computeDistance = function(ra, rb, jacc)
 		var element = document.getElementById(id);
 		body.removeChild(element);
 	}
-	
+
 	var pointsColor = d3.interpolateRgb("#ffff00", "#efefef");
 
 	function addPoint(x, y, p) {
@@ -601,7 +434,7 @@ var computeDistance = function(ra, rb, jacc)
 		id = "point" + x + "_" + y;
 		// element.id = "point";
 		element.width = width;
-		element.height = width;	
+		element.height = width;
 		element.id = id
 		var cans = element.getContext('2d');
 		cans.beginPath();
