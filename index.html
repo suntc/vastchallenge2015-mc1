@@ -60,8 +60,8 @@ text.rowtext222
 {
  position	: absolute;
  height		: auto;
- left		: 1200px;
- top		: 600px;
+ left		: 700px;
+ top		: 720px;
  bottom		: 40px;
  width		: 48%;
 }
@@ -100,6 +100,15 @@ text.rowtext222
 	width: 680px;
 	overflow: scroll;
 	bottom: 40px;
+}
+
+#bar_chart {
+	position: absolute;
+	left: 1300px;
+	top: 0px;
+	width: 600px;
+	bottom: 40px;
+	height: 1000px;
 }
 
 rect.grid {
@@ -142,6 +151,7 @@ text.bar_text {
 				<text id = "text_done">done</text>
 			</button>
 		</div>
+		<div id="bar_chart"></div>
 	</div>
 </body>
 
@@ -153,6 +163,7 @@ text.bar_text {
 <script src = './data/groupRep.js'></script>
 <script src = './data/trackData.js'></script>
 <script src="id_position.js" type="text/javascript"></script>
+<script src="bar_chart.js" type="text/javascript"></script>
 <script type= "text/javascript">
 
 //Global variables.
